@@ -20,6 +20,7 @@ from codespell_lib._codespell import (
     EX_USAGE,
     uri_regex_def,
 )
+from security import safe_command
 
 
 def test_constants() -> None:
@@ -69,8 +70,7 @@ def run_codespell(
 ) -> int:
     """Run codespell."""
     args = tuple(str(arg) for arg in args)
-    proc = subprocess.run(
-        ["codespell", "--count", *args],  # noqa: S603, S607
+    proc = safe_command.run(subprocess.run, ["codespell", "--count", *args],  # noqa: S603, S607
         cwd=cwd,
         capture_output=True,
         encoding="utf-8",
@@ -1313,8 +1313,7 @@ def run_codespell_stdin(
     cwd: Optional[Path] = None,
 ) -> int:
     """Run codespell in stdin mode and return number of lines in output."""
-    proc = subprocess.run(
-        ["codespell", *args, "-"],  # noqa: S603, S607
+    proc = safe_command.run(subprocess.run, ["codespell", *args, "-"],  # noqa: S603, S607
         cwd=cwd,
         input=text,
         capture_output=True,
